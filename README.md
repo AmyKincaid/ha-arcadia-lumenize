@@ -36,6 +36,9 @@ This integration adds local Bluetooth support for Arcadia / Lumenize LED bar dev
 4. Restart Home Assistant after installation.
 5. Add the integration from Settings > Devices & Services > Integrations.
 
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=amykincaid&repository=ha-arcadia-lumenize&category=integration)
+
+
 ## Configuration
 
 ### Bluetooth Auto-discovery
