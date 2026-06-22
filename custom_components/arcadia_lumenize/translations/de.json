@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Arcadia / Lumenize BLE LED Bar",
+        "description": "Gib die Bluetooth-MAC-Adresse deiner Lampe ein (z. B. 2B:00:00:00:00:00).",
+        "data": {
+          "address": "Bluetooth MAC-Adresse",
+          "name": "Name der Lampe"
+        }
+      },
+      "bluetooth_confirm": {
+        "title": "Arcadia BLE Lampe gefunden",
+        "description": "Gerät mit Adresse {address} wurde erkannt. Möchtest du es hinzufügen?",
+        "data": {
+          "name": "Name der Lampe"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
+      "invalid_address": "Ungültige MAC-Adresse – Format: AA:BB:CC:DD:EE:FF"
+    },
+    "abort": {
+      "already_configured": "Dieses Gerät ist bereits konfiguriert",
+      "not_connectable": "Dieses Gerät unterstützt keine Verbindung und kann nicht verwendet werden"
+    }
+  }
+}

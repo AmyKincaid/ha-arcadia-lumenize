@@ -1,0 +1,25 @@
+{
+  "domain": "arcadia_lumenize",
+  "name": "Arcadia Lumenize",
+  "version": "1.0.0",
+  "documentation": "https://github.com/amykincaid/ha-arcadia-lumenize",
+  "issue_tracker": "https://github.com/amykincaid/ha-arcadia-lumenize/issues",
+  "requirements": [
+    "bleak-retry-connector>=3.0.0"
+  ],
+  "codeowners": [
+    "@AmyKincaid"
+  ],
+  "iot_class": "local_push",
+  "integration_type": "hub",
+  "config_flow": true,
+  "dependencies": [
+    "bluetooth"
+  ],
+  "bluetooth": [
+    {
+      "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
+      "connectable": true
+    }
+  ]
+}
