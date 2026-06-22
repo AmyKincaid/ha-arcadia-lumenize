@@ -21,8 +21,8 @@
   ],
   "documentation": "https://github.com/amykincaid/ha-arcadia-lumenize",
   "integration_type": "device",
-  "issue_tracker": "https://github.com/amykincaid/ha-arcadia-lumenize/issues",
   "iot_class": "local_push",
+  "issue_tracker": "https://github.com/amykincaid/ha-arcadia-lumenize/issues",
   "requirements": [
     "bleak-retry-connector>=3.0.0"
   ],
