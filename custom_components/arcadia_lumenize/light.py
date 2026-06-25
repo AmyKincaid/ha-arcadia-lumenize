@@ -31,7 +31,10 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     if bluetooth_component.async_scanner_count(hass, connectable=True) == 0:
-        raise ConfigEntryNotReady("No connectable Bluetooth scanners available")
+        _LOGGER.debug(
+            "No connectable Bluetooth scanners available during startup for %s; the entity will be added as unavailable until Bluetooth is ready",
+            entry.entry_id,
+        )
 
     device = hass.data[DOMAIN].get(entry.entry_id)
     if device is None:

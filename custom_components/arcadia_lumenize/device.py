@@ -98,7 +98,7 @@ class ArcadiaBleDevice:
 
         return success
 
-    def _handle_notification(self, sender: Any, data: bytearray) -> None:
+    def _handle_notification(self, data: bytearray) -> None:
         _LOGGER.debug("Notification from %s: %s", self.address, data.hex())
 
         raw_brightness = parse_status_notification(data)

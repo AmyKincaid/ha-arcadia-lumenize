@@ -9,6 +9,7 @@ from bleak import BleakClient, BleakError
 from bleak_retry_connector import BleakClientWithServiceCache, establish_connection
 
 from homeassistant.components.bluetooth import async_ble_device_from_address
+from homeassistant.components.bluetooth import async_scanner_count
 from homeassistant.core import HomeAssistant
 
 from .protocol import (
@@ -89,6 +90,12 @@ class ArcadiaBleTransport:
             return True
 
     async def _connection_loop(self) -> None:
+        for _ in range(30):  # max. 60 Sekunden
+            if async_scanner_count(self.hass, connectable=True) > 0:
+                break
+            _LOGGER.debug("Warte auf BLE-Scanner...")
+            await asyncio.sleep(2)
+
         not_found_attempts = 0
         while True:
             try:
