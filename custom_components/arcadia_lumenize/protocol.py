@@ -15,21 +15,10 @@ INIT_PACKET = bytes([
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50,
 ])
 
-POWER_ON_PACKET = bytes([
-    0x04, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
-])
-
-POWER_OFF_PACKET = bytes([
-    0x04, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40,
-])
-
 STATUS_QUERY_PACKET = bytes([
     0x02, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20,
 ])
-
 
 def normalize_mac(address: str) -> str:
     """Normalise a MAC address to colon-separated uppercase form."""
@@ -38,16 +27,9 @@ def normalize_mac(address: str) -> str:
         raise ValueError("Invalid MAC address")
     return normalized
 
-
 def build_init_packet() -> bytes:
     """Return the 16-byte init/auth packet."""
     return INIT_PACKET
-
-
-def build_power_packet(on: bool) -> bytes:
-    """Return the 16-byte packet for power on/off."""
-    return POWER_ON_PACKET if on else POWER_OFF_PACKET
-
 
 def brightness_packet(brightness_pct: int) -> bytes:
     """Return the 16-byte packet that sets brightness (0-100)."""
@@ -58,7 +40,6 @@ def brightness_packet(brightness_pct: int) -> bytes:
         0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x20,
     ])
-
 
 def parse_status_notification(data: bytearray) -> int | None:
     """Parse a lamp status notification and return brightness percent."""

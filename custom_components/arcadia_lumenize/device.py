@@ -8,7 +8,6 @@ from typing import Any, Callable
 from homeassistant.core import HomeAssistant
 
 from .protocol import (
-    build_power_packet,
     brightness_packet,
     parse_status_notification,
 )
@@ -71,13 +70,7 @@ class ArcadiaBleDevice:
         await self._transport.async_stop()
 
     async def async_turn_on(self, brightness_pct: int) -> bool:
-        if self._is_on:
-            success = await self._transport.async_write(brightness_packet(brightness_pct))
-        else:
-            success = await self._transport.async_write(build_power_packet(True))
-            if success:
-                await asyncio.sleep(0.2)
-                success = await self._transport.async_write(brightness_packet(brightness_pct))
+        success = await self._transport.async_write(brightness_packet(brightness_pct))
 
         if success:
             self._is_on = True
@@ -85,17 +78,15 @@ class ArcadiaBleDevice:
             self._notify_state_changed()
         else:
             _LOGGER.error("Turn-on command failed for %s", self.address)
-
         return success
 
     async def async_turn_off(self) -> bool:
-        success = await self._transport.async_write(build_power_packet(False))
+        success = await self._transport.async_write(brightness_packet(0))
         if success:
             self._is_on = False
             self._notify_state_changed()
         else:
             _LOGGER.error("Turn-off command failed for %s", self.address)
-
         return success
 
     def _handle_notification(self, data: bytearray) -> None:
