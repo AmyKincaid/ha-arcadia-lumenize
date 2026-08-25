@@ -3,12 +3,18 @@
   "name": "Arcadia Lumenize",
   "bluetooth": [
     {
+      "local_name": "Arcadia*",
       "service_uuid": "0000fff0-0000-1000-8000-00805f9b34fb",
       "connectable": true
     },
     {
+      "local_name": "Arcadia*",
       "manufacturer_id": 20808,
-      "manufacturer_data_start": [0, 24, 43],
+      "manufacturer_data_start": [
+        0,
+        24,
+        43
+      ],
       "connectable": true
     }
   ],
@@ -26,5 +32,5 @@
   "requirements": [
     "bleak-retry-connector>=3.0.0"
   ],
-  "version": "1.0.2"
+  "version": "1.0.3"
 }

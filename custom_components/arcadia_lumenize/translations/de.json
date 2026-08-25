@@ -1,19 +1,58 @@
 {
+  "entity": {
+    "sensor": {
+      "ble_status": {
+        "name": "BLE Status"
+      },
+      "ble_last_seen": {
+        "name": "Letzte BLE Sichtung"
+      },
+      "ble_last_connected": {
+        "name": "Letzte erfolgreiche Verbindung"
+      },
+      "ble_last_write": {
+        "name": "Letzter erfolgreicher Befehl"
+      },
+      "ble_last_disconnect": {
+        "name": "Letzter BLE Disconnect"
+      },
+      "ble_last_error": {
+        "name": "Letzter BLE Fehler"
+      },
+      "ble_rssi": {
+        "name": "BLE Signalstärke"
+      }
+    },
+    "binary_sensor": {
+      "ble_connected": {
+        "name": "BLE verbunden"
+      },
+      "ble_advertising": {
+        "name": "BLE sichtbar"
+      }
+    }
+  },
   "config": {
     "step": {
       "user": {
         "title": "Arcadia / Lumenize BLE LED Bar",
-        "description": "Gib die Bluetooth-MAC-Adresse deiner Lampe ein (z. B. 2B:00:00:00:00:00).",
+        "description": "Gib die Bluetooth-MAC-Adresse deiner Lampe ein (z. B. 2B:00:00:00:00:00) und wähle danach Verbindungs- und Polling-Einstellungen.",
         "data": {
           "address": "Bluetooth MAC-Adresse",
-          "name": "Name der Lampe"
+          "name": "Name der Lampe",
+          "connection_mode": "BLE-Verbindungsmodus",
+          "status_polling": "Status aktiv pollen (nur temporärer Modus)",
+          "status_poll_interval": "Polling-Intervall in Sekunden (nur temporärer Modus)"
         }
       },
       "bluetooth_confirm": {
         "title": "Arcadia BLE Lampe gefunden",
-        "description": "Gerät mit Adresse {address} wurde erkannt. Möchtest du es hinzufügen?",
+        "description": "Gerät mit Adresse {address} wurde erkannt. Prüfe den Namen und wähle Verbindungs-/Polling-Einstellungen.",
         "data": {
-          "name": "Name der Lampe"
+          "name": "Name der Lampe",
+          "connection_mode": "BLE-Verbindungsmodus",
+          "status_polling": "Status aktiv pollen (nur temporärer Modus)",
+          "status_poll_interval": "Polling-Intervall in Sekunden (nur temporärer Modus)"
         }
       }
     },
@@ -23,7 +62,29 @@
     },
     "abort": {
       "already_configured": "Dieses Gerät ist bereits konfiguriert",
-      "not_connectable": "Dieses Gerät unterstützt keine Verbindung und kann nicht verwendet werden"
+      "not_connectable": "Dieses Gerät unterstützt keine Verbindung und kann nicht verwendet werden",
+      "not_arcadia_device": "Dieses gefundene Gerät ist kein Arcadia/LumenIZE Gerät"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Arcadia / Lumenize BLE",
+        "description": "Wähle Verbindungsmodus und Polling-Einstellungen. WICHTIG: Polling-Einstellungen haben nur im temporären Modus eine Wirkung. Intervall in Sekunden (gültig: {min_interval}-{max_interval}).",
+        "data": {
+          "connection_mode": "BLE-Verbindungsmodus",
+          "status_polling": "Status aktiv pollen (nur temporärer Modus)",
+          "status_poll_interval": "Polling-Intervall in Sekunden ({min_interval}-{max_interval}, nur temporärer Modus)"
+        }
+      }
+    }
+  },
+  "selector": {
+    "connection_mode": {
+      "options": {
+        "persistent": "Dauerhaft verbunden",
+        "temporary": "Temporär verbinden (bei Befehl)"
+      }
     }
   }
 }
