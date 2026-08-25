@@ -2,7 +2,7 @@
 
 Connection strategy can be selected per config entry:
 - persistent: keep a long-lived BLE connection once initialized.
-- temporary: reconnect on demand and disconnect after 10 seconds idle.
+- temporary: reconnect on demand and disconnect after 60 seconds idle.
 
 Diagnostics are passive: health state is updated from connection/write events only.
 No extra BLE health-check connections are created.
@@ -758,7 +758,11 @@ class ArcadiaBleTransport:
         except (BleakError, asyncio.TimeoutError) as exc:
             return str(exc)
         finally:
-            self._intentional_disconnect_client_ids.discard(client_id)
+            asyncio.get_running_loop().call_later(
+                SLOT_RELEASE_DELAY,
+                self._intentional_disconnect_client_ids.discard,
+                client_id,
+            )
 
     def _clear_error(self) -> None:
         self._last_error_code = None
