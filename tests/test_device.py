@@ -4,15 +4,32 @@ from tests.helpers import load_package_module
 
 
 device_module = load_package_module("custom_components.arcadia_lumenize.device")
+const_module = load_package_module("custom_components.arcadia_lumenize.const")
+
+
+class FakeHass:
+    def async_create_background_task(self, coro, name=None):
+        return asyncio.create_task(coro, name=name)
 
 
 class FakeTransport:
-    def __init__(self, hass, address, notification_cb, disconnect_cb, connected_cb):
+    def __init__(
+        self,
+        hass,
+        address,
+        notification_cb,
+        disconnect_cb,
+        connected_cb=None,
+        health_cb=None,
+        connection_mode=const_module.DEFAULT_CONNECTION_MODE,
+    ):
         self.hass = hass
         self.address = address
         self._notification_cb = notification_cb
         self._disconnect_cb = disconnect_cb
         self._connected_cb = connected_cb
+        self._health_cb = health_cb
+        self.connection_mode = connection_mode
         self.writes = []
         self.next_write_result = True
 
@@ -29,6 +46,9 @@ class FakeTransport:
         self.writes.append(bytes(pkt))
         return self.next_write_result
 
+    async def async_poll_status(self) -> bool:
+        return True
+
     # helper to simulate incoming notification
     def simulate_notification(self, data: bytearray):
         self._notification_cb(data)
@@ -39,7 +59,7 @@ async def test_turn_on_off_and_notifications(monkeypatch):
     # Patch transport creation to use our fake transport
     monkeypatch.setattr(device_module, "ArcadiaBleTransport", FakeTransport)
 
-    hass = object()  # we don't need a full hass for these unit tests
+    hass = FakeHass()
     addr = "AA:BB:CC:11:22:33"
     dev = device_module.ArcadiaBleDevice(hass, addr)
 
@@ -89,3 +109,24 @@ async def test_turn_on_off_and_notifications(monkeypatch):
     assert dev.available is False
 
     dev.unregister_callback(cb)
+
+
+@pytest.mark.asyncio
+async def test_disconnect_keeps_temporary_mode_available(monkeypatch):
+    monkeypatch.setattr(device_module, "ArcadiaBleTransport", FakeTransport)
+
+    hass = FakeHass()
+    addr = "AA:BB:CC:44:55:66"
+    dev = device_module.ArcadiaBleDevice(
+        hass,
+        addr,
+        connection_mode=const_module.CONNECTION_MODE_TEMPORARY,
+    )
+
+    assert dev.available is True
+
+    await dev.async_start()
+    assert dev.available is True
+
+    dev._handle_disconnect()
+    assert dev.available is True
