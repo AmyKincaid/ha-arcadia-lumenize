@@ -36,45 +36,45 @@
     "step": {
       "user": {
         "title": "Arcadia / Lumenize BLE LED Bar",
-        "description": "Gib die Bluetooth-Adresse deiner Lampe ein und waehle Verbindungs- und Polling-Einstellungen.",
+        "description": "Enter the Bluetooth MAC address of your lamp (e.g. 2B:00:00:00:00:00), then choose connection and polling settings.",
         "data": {
-          "address": "Bluetooth MAC-Adresse",
-          "name": "Name der Lampe",
-          "connection_mode": "BLE Verbindungsmodus",
-          "status_polling": "Status aktiv pollen (nur temporaerer Modus)",
-          "status_poll_interval": "Polling-Intervall in Sekunden (nur temporaerer Modus)"
+          "address": "Bluetooth MAC Address",
+          "name": "Name of the lamp",
+          "connection_mode": "BLE connection mode",
+          "status_polling": "Actively poll status (temporary mode only)",
+          "status_poll_interval": "Polling interval in seconds (temporary mode only)"
         }
       },
       "bluetooth_confirm": {
-        "title": "Arcadia BLE Lampe gefunden",
-        "description": "Geraet mit Adresse {address} wurde erkannt. Pruefe den Namen und waehle Verbindungs-/Polling-Einstellungen.",
+        "title": "Arcadia BLE lamp found",
+        "description": "A device with address {address} has been detected. Review the name and choose connection/polling settings.",
         "data": {
-          "name": "Name der Lampe",
-          "connection_mode": "BLE Verbindungsmodus",
-          "status_polling": "Status aktiv pollen (nur temporaerer Modus)",
-          "status_poll_interval": "Polling-Intervall in Sekunden (nur temporaerer Modus)"
+          "name": "Name of the lamp",
+          "connection_mode": "BLE connection mode",
+          "status_polling": "Actively poll status (temporary mode only)",
+          "status_poll_interval": "Polling interval in seconds (temporary mode only)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Verbindung fehlgeschlagen",
-      "invalid_address": "Ungültige MAC-Adresse"
+      "cannot_connect": "Failed to connect to the device",
+      "invalid_address": "Invalid MAC address – format: AA:BB:CC:DD:EE:FF"
     },
     "abort": {
-      "already_configured": "Gerät ist bereits konfiguriert",
-      "not_connectable": "Das gefundene Gerät ist nicht verbindbar",
-      "not_arcadia_device": "Das gefundene Gerät ist kein Arcadia/LumenIZE Gerät"
+      "already_configured": "This device is already configured",
+      "not_connectable": "This device is not connectable and cannot be used",
+      "not_arcadia_device": "This discovered device is not an Arcadia/LumenIZE device"
     }
   },
   "options": {
     "step": {
       "init": {
         "title": "Arcadia / Lumenize BLE",
-        "description": "Wähle Verbindungsmodus und Polling-Einstellungen. WICHTIG: Polling-Einstellungen haben nur im temporären Modus eine Wirkung. Intervall in Sekunden (gültig: {min_interval}-{max_interval}).",
+        "description": "Select connection mode and polling settings. IMPORTANT: Polling settings only take effect in temporary mode. Interval is in seconds (valid: {min_interval}-{max_interval}).",
         "data": {
-          "connection_mode": "BLE Verbindungsmodus",
-          "status_polling": "Status aktiv pollen (nur temporärer Modus)",
-          "status_poll_interval": "Polling-Intervall in Sekunden ({min_interval}-{max_interval}, nur temporärer Modus)"
+          "connection_mode": "BLE connection mode",
+          "status_polling": "Actively poll status (temporary mode only)",
+          "status_poll_interval": "Polling interval in seconds ({min_interval}-{max_interval}, temporary mode only)"
         }
       }
     }
@@ -82,8 +82,8 @@
   "selector": {
     "connection_mode": {
       "options": {
-        "persistent": "Dauerhaft verbunden",
-        "temporary": "Temporär verbinden (bei Befehl)"
+        "persistent": "Persistent (always connected)",
+        "temporary": "Temporary (connect on command)"
       }
     }
   }
