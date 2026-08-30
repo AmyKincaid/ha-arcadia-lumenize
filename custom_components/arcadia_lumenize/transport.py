@@ -239,14 +239,29 @@ class ArcadiaBleTransport:
         except Exception as exc:  # noqa: BLE001
             if self._health_state not in ("unavailable", "error"):
                 self._set_error("initial_sync_failed", str(exc), "error")
-            _LOGGER.warning(
-                "[%s] Initial BLE state synchronization failed: %s. "
-                "Will retry automatically on the next command.",
-                self.address,
-                exc,
-            )
+            if self._stopping:
+                _LOGGER.warning(
+                    "[%s] Initial BLE state synchronization failed: %s. "
+                    "Stopping — no retry will be scheduled.",
+                    self.address,
+                    exc,
+                )
+            else:
+                _LOGGER.warning(
+                    "[%s] Initial BLE state synchronization failed: %s. "
+                    "Will retry automatically%s.",
+                    self.address,
+                    exc,
+                    " on the next command" if self._temporary_mode else " in the background",
+                )
             async with self._lock:
                 await self._disconnect_after_error(preserve_health_state=True)
+            # Unlike an unexpected mid-session disconnect, a failed initial
+            # connect never fires the BLE disconnected_callback, so nothing
+            # else schedules the persistent-mode reconnect worker here.
+            if not self._temporary_mode and not self._stopping:
+                self._set_health_state("reconnecting", force_notify=True)
+                self._schedule_reconnect()
 
     async def _wait_for_ble_scanner(self) -> None:
         for _ in range(SCANNER_WAIT_ATTEMPTS):
@@ -271,7 +286,11 @@ class ArcadiaBleTransport:
             return
 
         self._set_health_state("connecting")
-        _LOGGER.info("[%s] Connecting on demand", self.address)
+        _LOGGER.info(
+            "[%s] Connecting (%s mode)",
+            self.address,
+            self._connection_mode,
+        )
         client = await self._establish_connection(use_services_cache=True)
         self._client = client
 

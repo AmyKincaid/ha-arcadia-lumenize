@@ -46,6 +46,10 @@ class FakeHass:
         raise RuntimeError("background task should be monkeypatched in these unit tests")
 
 
+async def _async_noop(*args, **kwargs):
+    return None
+
+
 class FakeClient:
     def __init__(self):
         self.is_connected = False
@@ -155,6 +159,65 @@ async def test_unexpected_disconnect_temporary_does_not_schedule_reconnect(monke
     assert transport.health_state == "error"
     assert transport._client is None
     assert transport.last_disconnect_reason == "unexpected disconnect"
+
+
+@pytest.mark.asyncio
+async def test_initial_connect_failure_schedules_reconnect_persistent(monkeypatch):
+    reconnect_scheduled = []
+
+    transport = ArcadiaBleTransport(
+        FakeHass(),
+        "AA:BB:CC:22:33:44",
+        notification_callback=lambda data: None,
+        disconnect_callback=lambda: None,
+        connection_mode=const_module.CONNECTION_MODE_PERSISTENT,
+    )
+
+    monkeypatch.setattr(transport, "_wait_for_ble_scanner", _async_noop)
+
+    async def failing_state_sync():
+        raise RuntimeError("device not advertising")
+
+    monkeypatch.setattr(transport, "_run_initial_state_sync", failing_state_sync)
+    monkeypatch.setattr(
+        transport,
+        "_schedule_reconnect",
+        lambda: reconnect_scheduled.append(True),
+    )
+
+    await transport._initial_connect()
+
+    assert reconnect_scheduled == [True]
+    assert transport.health_state == "reconnecting"
+
+
+@pytest.mark.asyncio
+async def test_initial_connect_failure_does_not_schedule_reconnect_temporary(monkeypatch):
+    reconnect_scheduled = []
+
+    transport = ArcadiaBleTransport(
+        FakeHass(),
+        "AA:BB:CC:55:66:77",
+        notification_callback=lambda data: None,
+        disconnect_callback=lambda: None,
+        connection_mode=const_module.CONNECTION_MODE_TEMPORARY,
+    )
+
+    monkeypatch.setattr(transport, "_wait_for_ble_scanner", _async_noop)
+
+    async def failing_state_sync():
+        raise RuntimeError("device not advertising")
+
+    monkeypatch.setattr(transport, "_run_initial_state_sync", failing_state_sync)
+    monkeypatch.setattr(
+        transport,
+        "_schedule_reconnect",
+        lambda: reconnect_scheduled.append(True),
+    )
+
+    await transport._initial_connect()
+
+    assert reconnect_scheduled == []
 
 
 @pytest.mark.asyncio
