@@ -239,13 +239,21 @@ class ArcadiaBleTransport:
         except Exception as exc:  # noqa: BLE001
             if self._health_state not in ("unavailable", "error"):
                 self._set_error("initial_sync_failed", str(exc), "error")
-            _LOGGER.warning(
-                "[%s] Initial BLE state synchronization failed: %s. "
-                "Will retry automatically%s.",
-                self.address,
-                exc,
-                " on the next command" if self._temporary_mode else " in the background",
-            )
+            if self._stopping:
+                _LOGGER.warning(
+                    "[%s] Initial BLE state synchronization failed: %s. "
+                    "Stopping — no retry will be scheduled.",
+                    self.address,
+                    exc,
+                )
+            else:
+                _LOGGER.warning(
+                    "[%s] Initial BLE state synchronization failed: %s. "
+                    "Will retry automatically%s.",
+                    self.address,
+                    exc,
+                    " on the next command" if self._temporary_mode else " in the background",
+                )
             async with self._lock:
                 await self._disconnect_after_error(preserve_health_state=True)
             # Unlike an unexpected mid-session disconnect, a failed initial
